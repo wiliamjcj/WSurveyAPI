@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "controller.survey.mapping",
+  "type": "java.lang.String",
+  "description": "Request mapping for SurveyController"
+}]}
