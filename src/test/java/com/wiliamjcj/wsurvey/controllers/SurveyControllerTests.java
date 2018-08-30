@@ -3,6 +3,7 @@ package com.wiliamjcj.wsurvey.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +19,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.wiliamjcj.wsurvey.SurveyController;
-
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = SurveyController.class, secure = false)
 public class SurveyControllerTests {
@@ -32,8 +31,20 @@ public class SurveyControllerTests {
 	
 	@Test 
 	public void addSurveyTest() throws Exception {
-		String jsonToSend = "{}";
-		String expectedResult = "{\"data\":\"ok\"}";
+		String jsonToSend = "{ "
+				+ "		\"question\": \"What is your favorite color?\", "
+				+"		\"options\": [ { \"description\": \"Blue\" }, { \"description\": \"Red\" } ] "
+		        + "}";
+		String expectedResult = "{ "
+				+ "		\"id\": 1, "
+				+ "		\"question\": \"What is your favorite color?\", "
+				+"		\"options\": [ "
+				+ "			{ \"id\": 1, \"votes\": 0, \"description\": \"Blue\" }, "
+		        + "			{ \"id\": 2, \"votes\": 0, \"description\": \"Red\" } "
+		        + "		], "
+		        +"		\"started\": false, "
+		        + "		\"ended\": false "
+		        + "}";
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(BASE_ENDPOINT)
 				.accept(MediaType.APPLICATION_JSON_UTF8)
@@ -54,5 +65,27 @@ public class SurveyControllerTests {
 		JSONAssert.assertEquals(expectedResult, returnedResult.toString(), false);
 	}
 	
+	@Test 
+	public void addSurveyValidationTest() throws Exception {
+		//missing the required question property
+		String jsonToSend = "{ "
+				+"		\"options\": [ { \"description\": \"Blue\" }, { \"description\": \"Red\" } ] "
+		        + "}";
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(BASE_ENDPOINT)
+				.accept(MediaType.APPLICATION_JSON_UTF8)
+				.content(jsonToSend)
+				.contentType(MediaType.APPLICATION_JSON_UTF8);
+		
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+
+		int status = result.getResponse().getStatus();
+		assertEquals(HttpStatus.BAD_REQUEST.value(), status);
+
+		JSONObject jo = new JSONObject(result.getResponse().getContentAsString());
+		JSONArray errorsArray = jo.getJSONArray("errors");
+		
+		assertEquals("Survey must have a question.", errorsArray.get(0));
+	}
 
 }
