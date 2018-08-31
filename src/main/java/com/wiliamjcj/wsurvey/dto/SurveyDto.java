@@ -1,5 +1,6 @@
 package com.wiliamjcj.wsurvey.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotEmpty;
@@ -50,7 +51,7 @@ public class SurveyDto implements Jsonable {
 	}
 
 	public List<OptionDto> getOptions() {
-		return options;
+		return this.options == null ? new ArrayList<OptionDto>() : this.options;
 	}
 
 	public void setOptions(List<OptionDto> options) {

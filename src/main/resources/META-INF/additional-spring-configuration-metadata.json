@@ -1,5 +1,22 @@
-{"properties": [{
-  "name": "controller.survey.mapping",
-  "type": "java.lang.String",
-  "description": "Request mapping for SurveyController"
-}]}
+{"properties": [
+  {
+    "name": "controller.survey.mapping",
+    "type": "java.lang.String",
+    "description": "Request mapping for SurveyController"
+  },
+  {
+    "name": "application.base.package",
+    "type": "java.lang.String",
+    "description": "The application base package name"
+  },
+  {
+    "name": "logging.printstatcktrace",
+    "type": "java.lang.String",
+    "description": "Should print partial stack trace on log"
+  },
+  {
+    "name": "logging.printfullstatcktrace",
+    "type": "java.lang.String",
+    "description": "Should print full stack trace on log"
+  }
+]}
